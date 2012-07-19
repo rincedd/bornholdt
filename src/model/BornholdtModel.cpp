@@ -1,4 +1,5 @@
 #include "BornholdtModel.h"
+#include "edge_states.h"
 #include <boost/foreach.hpp>
 #include <myrng/myrngWELL.h>
 

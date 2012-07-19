@@ -14,13 +14,14 @@
 #include "Observer.h"
 #include "CorrelationObserver.h"
 #include "Filename.h"
+#include "model/edge_states.h"
 
 using namespace std;
 using namespace largenet;
 using largenet::generators::util::random_from;
 
 EvolutionController::EvolutionController(BornholdtParameters par) :
-		par_(par), graph_(1, 1), weights_(0), model_(0), streams_()
+		par_(par), graph_(1, 2), weights_(0), model_(0), streams_()
 {
 	if (par_.seed != 0)
 		rng.seed(par_.seed);
@@ -32,6 +33,11 @@ void EvolutionController::setup()
 {
 	generators::randomGnm(graph_, par_.num_nodes,
 			par_.average_degree * par_.num_nodes, rng, true);
+
+	BOOST_FOREACH(Edge& e, graph_.edges())
+	{
+		graph_.setEdgeState(e.id(), ACTIVE);
+	}
 
 	/// TODO use some logger/logging framework for this
 	cout << "ER network with N = " << graph_.numberOfNodes() << " and L = "
@@ -53,6 +59,7 @@ void EvolutionController::writeInfo(ostream& strm) const
 {
 	strm << "# Bornholdt/Röhl model on ER network.\n";
 	strm << par_ << "\n";
+	strm << "# Actual random number generator seed: " << rng.getSeed() << "\n";
 }
 
 void EvolutionController::updateTopology(Graph::EdgeIterator edge,
@@ -60,14 +67,13 @@ void EvolutionController::updateTopology(Graph::EdgeIterator edge,
 {
 	if (abs(correlation) > par_.alpha)
 	{
-		// add new link
-		edge_id_t eid = graph_.addEdge(edge->source()->id(),
-				edge->target()->id(), true);
-		weights_->setWeight(*graph_.edge(eid), rng.FromTo(-1, 1));
+		graph_.setEdgeState(edge->id(), ACTIVE);
+		weights_->setWeight(*edge, rng.FromTo(-1, 1));
 	}
 	else
 	{
-		graph_.removeEdge(edge->id());
+		graph_.setEdgeState(edge->id(), INACTIVE);
+		weights_->setWeight(*edge, 0.0);
 	}
 }
 
@@ -85,7 +91,8 @@ int EvolutionController::exec()
 {
 	setup();
 
-	ostream& averages_stream = streams_.openStream(Filename(name(), par_, "averages"));
+	ostream& averages_stream = streams_.openStream(
+			Filename(name(), par_, "averages"));
 	writeInfo(averages_stream);
 	AverageEvolutionLogger ael(graph_, *weights_);
 	ael.setStream(averages_stream);
