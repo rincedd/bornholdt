@@ -25,8 +25,6 @@ EvolutionController::EvolutionController(BornholdtParameters par) :
 {
 	if (par_.seed != 0)
 		rng.seed(par_.seed);
-	graph_.setElementFactory(
-			auto_ptr<ElementFactory>(new MultiEdgeElementFactory));
 }
 
 void EvolutionController::setup()
