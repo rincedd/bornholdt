@@ -15,6 +15,7 @@
 #include "CorrelationObserver.h"
 #include "Filename.h"
 #include "model/edge_states.h"
+#include "loggers/SnapshotLogger.h"
 
 using namespace std;
 using namespace largenet;
@@ -95,6 +96,13 @@ int EvolutionController::exec()
 	AverageEvolutionLogger ael(graph_, *weights_);
 	ael.setStream(averages_stream);
 	ael.writeHeader(0);
+
+	SnapshotLogger snapshot_logger(graph_, *weights_, *model_);
+	snapshot_logger.setStream(
+			streams_.openStream(Filename(name(), par_, "networks")));
+	snapshot_logger.writeHeader(0);
+
+	size_t next = 0;
 	for (size_t i = 0; i < par_.num_topological_updates; ++i)
 	{
 		iterate(par_.num_iterations / 2);
@@ -104,6 +112,11 @@ int EvolutionController::exec()
 				model_->spin(edge->target()->id()));
 		iterate(par_.num_iterations / 2, &corr_obs);
 		ael.log(i);
+		if (i >= next)
+		{
+			snapshot_logger.log(i);
+			next += par_.snapshot_interval;
+		}
 		updateTopology(edge, corr_obs.mean());
 	}
 	ael.log(par_.num_topological_updates);

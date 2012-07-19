@@ -33,9 +33,20 @@ public:
 public:
 	BornholdtModel(largenet::Graph& g, EdgeWeights& w, Params p);
 
+	size_t size() const
+	{
+		return spins_.size();
+	}
+
+	void resize(size_t n)
+	{
+		if (n != spins_.size())
+			spins_.resize(n, DOWN);
+	}
 	void init();
 	void step();
 	spin_v::const_reference spin(largenet::node_id_t i) const { return spins_[i]; }
+	spin_v::reference spin(largenet::node_id_t i) { return spins_[i]; }
 
 private:
 	largenet::Graph& net_;

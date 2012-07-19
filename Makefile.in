@@ -63,7 +63,9 @@ am_bornholdt_OBJECTS = src/bornholdt-bornholdt.$(OBJEXT) \
 	src/bornholdt-BornholdtApp.$(OBJEXT) \
 	src/model/bornholdt-BornholdtModel.$(OBJEXT) \
 	src/bornholdt-EvolutionController.$(OBJEXT) \
-	src/bornholdt-BornholdtOptions.$(OBJEXT)
+	src/bornholdt-BornholdtOptions.$(OBJEXT) \
+	src/model/bornholdt-GraphStateReader.$(OBJEXT) \
+	src/model/bornholdt-GraphStateWriter.$(OBJEXT)
 bornholdt_OBJECTS = $(am_bornholdt_OBJECTS)
 am__DEPENDENCIES_1 =
 bornholdt_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -260,7 +262,9 @@ bornholdt_SOURCES = \
 	src/BornholdtApp.cpp \
 	src/model/BornholdtModel.cpp \
 	src/EvolutionController.cpp	\
-	src/BornholdtOptions.cpp
+	src/BornholdtOptions.cpp \
+	src/model/GraphStateReader.cpp \
+	src/model/GraphStateWriter.cpp
 
 bornholdt_CXXFLAGS = $(AM_CXXFLAGS) $(ODEINT_CXXFLAGS) \
 	$(BOOST_CXXFLAGS) $(DEPS_CFLAGS) $(am__append_1)
@@ -385,6 +389,10 @@ src/bornholdt-EvolutionController.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
 src/bornholdt-BornholdtOptions.$(OBJEXT): src/$(am__dirstamp) \
 	src/$(DEPDIR)/$(am__dirstamp)
+src/model/bornholdt-GraphStateReader.$(OBJEXT):  \
+	src/model/$(am__dirstamp) src/model/$(DEPDIR)/$(am__dirstamp)
+src/model/bornholdt-GraphStateWriter.$(OBJEXT):  \
+	src/model/$(am__dirstamp) src/model/$(DEPDIR)/$(am__dirstamp)
 bornholdt$(EXEEXT): $(bornholdt_OBJECTS) $(bornholdt_DEPENDENCIES) $(EXTRA_bornholdt_DEPENDENCIES) 
 	@rm -f bornholdt$(EXEEXT)
 	$(AM_V_CXXLD)$(bornholdt_LINK) $(bornholdt_OBJECTS) $(bornholdt_LDADD) $(LIBS)
@@ -396,6 +404,8 @@ mostlyclean-compile:
 	-rm -f src/bornholdt-EvolutionController.$(OBJEXT)
 	-rm -f src/bornholdt-bornholdt.$(OBJEXT)
 	-rm -f src/model/bornholdt-BornholdtModel.$(OBJEXT)
+	-rm -f src/model/bornholdt-GraphStateReader.$(OBJEXT)
+	-rm -f src/model/bornholdt-GraphStateWriter.$(OBJEXT)
 
 distclean-compile:
 	-rm -f *.tab.c
@@ -405,6 +415,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/bornholdt-EvolutionController.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/$(DEPDIR)/bornholdt-bornholdt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@src/model/$(DEPDIR)/bornholdt-BornholdtModel.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/model/$(DEPDIR)/bornholdt-GraphStateReader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@src/model/$(DEPDIR)/bornholdt-GraphStateWriter.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -499,6 +511,34 @@ src/bornholdt-BornholdtOptions.obj: src/BornholdtOptions.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/BornholdtOptions.cpp' object='src/bornholdt-BornholdtOptions.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bornholdt_CXXFLAGS) $(CXXFLAGS) -c -o src/bornholdt-BornholdtOptions.obj `if test -f 'src/BornholdtOptions.cpp'; then $(CYGPATH_W) 'src/BornholdtOptions.cpp'; else $(CYGPATH_W) '$(srcdir)/src/BornholdtOptions.cpp'; fi`
+
+src/model/bornholdt-GraphStateReader.o: src/model/GraphStateReader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bornholdt_CXXFLAGS) $(CXXFLAGS) -MT src/model/bornholdt-GraphStateReader.o -MD -MP -MF src/model/$(DEPDIR)/bornholdt-GraphStateReader.Tpo -c -o src/model/bornholdt-GraphStateReader.o `test -f 'src/model/GraphStateReader.cpp' || echo '$(srcdir)/'`src/model/GraphStateReader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/model/$(DEPDIR)/bornholdt-GraphStateReader.Tpo src/model/$(DEPDIR)/bornholdt-GraphStateReader.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/model/GraphStateReader.cpp' object='src/model/bornholdt-GraphStateReader.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bornholdt_CXXFLAGS) $(CXXFLAGS) -c -o src/model/bornholdt-GraphStateReader.o `test -f 'src/model/GraphStateReader.cpp' || echo '$(srcdir)/'`src/model/GraphStateReader.cpp
+
+src/model/bornholdt-GraphStateReader.obj: src/model/GraphStateReader.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bornholdt_CXXFLAGS) $(CXXFLAGS) -MT src/model/bornholdt-GraphStateReader.obj -MD -MP -MF src/model/$(DEPDIR)/bornholdt-GraphStateReader.Tpo -c -o src/model/bornholdt-GraphStateReader.obj `if test -f 'src/model/GraphStateReader.cpp'; then $(CYGPATH_W) 'src/model/GraphStateReader.cpp'; else $(CYGPATH_W) '$(srcdir)/src/model/GraphStateReader.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/model/$(DEPDIR)/bornholdt-GraphStateReader.Tpo src/model/$(DEPDIR)/bornholdt-GraphStateReader.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/model/GraphStateReader.cpp' object='src/model/bornholdt-GraphStateReader.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bornholdt_CXXFLAGS) $(CXXFLAGS) -c -o src/model/bornholdt-GraphStateReader.obj `if test -f 'src/model/GraphStateReader.cpp'; then $(CYGPATH_W) 'src/model/GraphStateReader.cpp'; else $(CYGPATH_W) '$(srcdir)/src/model/GraphStateReader.cpp'; fi`
+
+src/model/bornholdt-GraphStateWriter.o: src/model/GraphStateWriter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bornholdt_CXXFLAGS) $(CXXFLAGS) -MT src/model/bornholdt-GraphStateWriter.o -MD -MP -MF src/model/$(DEPDIR)/bornholdt-GraphStateWriter.Tpo -c -o src/model/bornholdt-GraphStateWriter.o `test -f 'src/model/GraphStateWriter.cpp' || echo '$(srcdir)/'`src/model/GraphStateWriter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/model/$(DEPDIR)/bornholdt-GraphStateWriter.Tpo src/model/$(DEPDIR)/bornholdt-GraphStateWriter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/model/GraphStateWriter.cpp' object='src/model/bornholdt-GraphStateWriter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bornholdt_CXXFLAGS) $(CXXFLAGS) -c -o src/model/bornholdt-GraphStateWriter.o `test -f 'src/model/GraphStateWriter.cpp' || echo '$(srcdir)/'`src/model/GraphStateWriter.cpp
+
+src/model/bornholdt-GraphStateWriter.obj: src/model/GraphStateWriter.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bornholdt_CXXFLAGS) $(CXXFLAGS) -MT src/model/bornholdt-GraphStateWriter.obj -MD -MP -MF src/model/$(DEPDIR)/bornholdt-GraphStateWriter.Tpo -c -o src/model/bornholdt-GraphStateWriter.obj `if test -f 'src/model/GraphStateWriter.cpp'; then $(CYGPATH_W) 'src/model/GraphStateWriter.cpp'; else $(CYGPATH_W) '$(srcdir)/src/model/GraphStateWriter.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) src/model/$(DEPDIR)/bornholdt-GraphStateWriter.Tpo src/model/$(DEPDIR)/bornholdt-GraphStateWriter.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='src/model/GraphStateWriter.cpp' object='src/model/bornholdt-GraphStateWriter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bornholdt_CXXFLAGS) $(CXXFLAGS) -c -o src/model/bornholdt-GraphStateWriter.obj `if test -f 'src/model/GraphStateWriter.cpp'; then $(CYGPATH_W) 'src/model/GraphStateWriter.cpp'; else $(CYGPATH_W) '$(srcdir)/src/model/GraphStateWriter.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
