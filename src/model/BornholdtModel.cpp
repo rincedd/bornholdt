@@ -25,10 +25,6 @@ void BornholdtModel::init()
 	}
 }
 
-BornholdtModel::~BornholdtModel()
-{
-}
-
 void BornholdtModel::step()
 {
 	spin_v new_spins(spins_);

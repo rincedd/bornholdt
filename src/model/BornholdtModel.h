@@ -32,7 +32,6 @@ public:
 
 public:
 	BornholdtModel(largenet::Graph& g, EdgeWeights& w, Params p);
-	~BornholdtModel();
 
 	void init();
 	void step();
