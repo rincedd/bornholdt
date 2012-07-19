@@ -4,7 +4,10 @@ bin_PROGRAMS = bornholdt
 
 bornholdt_SOURCES = \
 	src/bornholdt.cpp \
-	src/BornholdtApp.cpp
+	src/BornholdtApp.cpp \
+	src/model/BornholdtModel.cpp \
+	src/EvolutionController.cpp	\
+	src/BornholdtOptions.cpp
 
 bornholdt_CXXFLAGS = $(AM_CXXFLAGS) $(ODEINT_CXXFLAGS) $(BOOST_CXXFLAGS) $(DEPS_CFLAGS)
 bornholdt_LDFLAGS = $(DEPS_LDFLAGS) $(BOOST_PROGRAM_OPTIONS_LDFLAGS)

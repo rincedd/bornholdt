@@ -6,24 +6,31 @@
  */
 
 #include "BornholdtApp.h"
+#include "EvolutionController.h"
 
-BornholdtApp::BornholdtApp()
+BornholdtApp::BornholdtApp() : opts_()
 {
-	// TODO Auto-generated constructor stub
-
-}
-
-BornholdtApp::~BornholdtApp()
-{
-	// TODO Auto-generated destructor stub
 }
 
 void BornholdtApp::parseCommandLine(int argc, char** argv)
 {
-
+	try
+	{
+		opts_.parseCommandLine(argc, argv);
+	} catch (BornholdtOptions::UsageError& e)
+	{
+		opts_.printHelpText(std::cout);
+		exit(0);
+	} catch (BornholdtOptions::ParsingError& e)
+	{
+		std::cerr << e.what() << "\n";
+		exit(1);
+	}
 }
 
 int BornholdtApp::exec()
 {
-	return 0;
+	EvolutionController evol(opts_.params());
+	evol.setName("evol");
+	return evol.exec();
 }

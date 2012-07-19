@@ -8,14 +8,17 @@
 #ifndef BORNHOLDTAPP_H_
 #define BORNHOLDTAPP_H_
 
+#include "BornholdtOptions.h"
+
 class BornholdtApp
 {
 public:
 	BornholdtApp();
-	virtual ~BornholdtApp();
 
 	void parseCommandLine(int argc, char** argv);
 	int exec();
+private:
+	BornholdtOptions opts_;
 };
 
 #endif /* BORNHOLDTAPP_H_ */

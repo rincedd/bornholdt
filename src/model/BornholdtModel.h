@@ -8,7 +8,14 @@
 #ifndef BORNHOLDTMODEL_H_
 #define BORNHOLDTMODEL_H_
 
+#include "EdgeWeights.h"
 #include <largenet2.h>
+#include <stdexcept>
+
+enum NodeState
+{
+	DOWN = -1, UP = 1
+};
 
 class BornholdtModel
 {
@@ -20,17 +27,23 @@ public:
 		double mu; 		///< threshold distribution mean
 	};
 
-	// TODO do we need this, or should we use node states for this?
-	typedef std::vector<short> state_t;	///< vector of neuron states (+1 or -1)
+	typedef std::vector<short> spin_v;	///< vector of neuron states (+1 or -1)
+	typedef std::vector<double> threshold_v;
 
 public:
 	BornholdtModel(largenet::Graph& g, EdgeWeights& w, Params p);
 	~BornholdtModel();
 
+	void init();
 	void step();
+	spin_v::const_reference spin(largenet::node_id_t i) const { return spins_[i]; }
+
 private:
 	largenet::Graph& net_;
+	EdgeWeights& weights_;
 	Params par_;
+	threshold_v thresholds_;
+	spin_v spins_;
 };
 
 #endif /* BORNHOLDTMODEL_H_ */

@@ -27,7 +27,7 @@ AC_ARG_ENABLE([debug],
 AM_CONDITIONAL([DEBUGMODE], [test "x$debug" = "xyes"])
 
 PKG_PROG_PKG_CONFIG
-PKG_CHECK_MODULES([DEPS], [largenet2 >= 0.3])
+PKG_CHECK_MODULES([DEPS], [largenet2 >= 0.3 myrngWELL >= 1.5])
  
 # Sanity check
 AC_CONFIG_SRCDIR([src/bornholdt.cpp])
