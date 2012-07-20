@@ -9,6 +9,9 @@
 #define BORNHOLDTAPP_H_
 
 #include "BornholdtOptions.h"
+#include <memory>
+
+class Controller;
 
 class BornholdtApp
 {
@@ -17,6 +20,9 @@ public:
 
 	void parseCommandLine(int argc, char** argv);
 	int exec();
+private:
+	void showHelpAndExitIfRequested();
+	std::auto_ptr<Controller> createController();
 private:
 	BornholdtOptions opts_;
 };

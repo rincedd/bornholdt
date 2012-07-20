@@ -1,10 +1,5 @@
-/**
- * @file StreamCollection.h
- * @date 05.06.2012
- */
-
-#ifndef OSTREAMCOLLECTION_H_
-#define OSTREAMCOLLECTION_H_
+#ifndef OFSTREAMMANAGER_H_
+#define OFSTREAMMANAGER_H_
 
 #include <iostream>
 #include <fstream>
@@ -12,15 +7,9 @@
 #include <memory>
 #include <boost/ptr_container/ptr_vector.hpp>
 
-/**
- * 
- *
- */
-class OStreamCollection
+class OFStreamManager
 {
 public:
-	OStreamCollection() {}
-	~OStreamCollection() {}
 	std::ostream& openStream(std::string filename)
 	{
 		std::auto_ptr<std::ofstream> o(new std::ofstream(filename.c_str()));
@@ -38,4 +27,4 @@ private:
 	ostream_ptr_v streams_;
 };
 
-#endif /* OSTREAMCOLLECTION_H_ */
+#endif /* OFSTREAMMANAGER_H_ */

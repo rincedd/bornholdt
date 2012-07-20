@@ -29,17 +29,11 @@ public:
 		{
 		}
 	};
-	class UsageError: public boost::program_options::error
-	{
-	public:
-		explicit UsageError(const std::string& xwhat) :
-				error(xwhat)
-		{
-		}
-	};
 public:
 	BornholdtOptions();
 	void parseCommandLine(int argc, char** argv);
+	bool isHelpRequested() const;
+
 	const BornholdtParameters& params() const
 	{
 		return par_;
@@ -49,7 +43,9 @@ public:
 		out << allOptions_ << "\n";
 	}
 private:
-	void init();
+	void setup();
+	void getOptionsFromCommandLine(int argc, char** argv);
+
 private:
 	BornholdtParameters par_;
 	boost::program_options::options_description allOptions_;

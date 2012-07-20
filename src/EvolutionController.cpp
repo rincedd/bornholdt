@@ -1,10 +1,3 @@
-/*
- * EvolutionController.cpp
- *
- *  Created on: 19.07.2012
- *      Author: gerd
- */
-
 #include <myrng/myrngWELL.h>
 #include <myrng/util.h>
 
@@ -24,56 +17,80 @@ using largenet::generators::util::random_from;
 EvolutionController::EvolutionController(BornholdtParameters par) :
 		par_(par), graph_(1, 2), weights_(0), model_(0), streams_()
 {
-	if (par_.seed != 0)
-		rng.seed(par_.seed);
+	initRandomNumberGenerator();
 }
 
-void EvolutionController::setup()
+void EvolutionController::storeRandomNumberGeneratorSeed()
+{
+	par_.seed = rng.getSeed();
+}
+
+void EvolutionController::initRandomNumberGenerator()
+{
+	if (par_.seed != 0)
+		rng.seed(par_.seed);
+	storeRandomNumberGeneratorSeed();
+}
+
+void EvolutionController::createRandomNetwork()
 {
 	generators::randomGnm(graph_, par_.num_nodes,
 			par_.average_degree * par_.num_nodes, rng, true);
-
 	BOOST_FOREACH(Edge& e, graph_.edges())
 	{
 		graph_.setEdgeState(e.id(), ACTIVE);
 	}
+}
 
-	/// TODO use some logger/logging framework for this
-	cout << "ER network with N = " << graph_.numberOfNodes() << " and L = "
-			<< graph_.numberOfEdges() << " (<k> = "
-			<< graph_.numberOfEdges() / graph_.numberOfNodes() << ").\n";
-
+void EvolutionController::initEdgeWeights()
+{
 	weights_.reset(
 			new EdgeWeights(graph_.numberOfEdges(), graph_.numberOfNodes()));
 	BOOST_FOREACH(const Edge& e, graph_.edges())
 	{
 		weights_->setWeight(e, rng.FromTo(-1, 1));
 	}
+}
+
+void EvolutionController::initModel()
+{
 	BornholdtModel::Params par =
 	{ par_.beta, par_.epsilon, par_.mu };
 	model_.reset(new BornholdtModel(graph_, *weights_, par));
+}
+
+void EvolutionController::setup()
+{
+	createRandomNetwork();
+	initEdgeWeights();
+	initModel();
 }
 
 void EvolutionController::writeInfo(ostream& strm) const
 {
 	strm << "# Bornholdt/Röhl model on ER network.\n";
 	strm << par_ << "\n";
-	strm << "# Actual random number generator seed: " << rng.getSeed() << "\n";
+}
+
+void EvolutionController::activateEdge(const Graph::EdgeIterator& edge)
+{
+	graph_.setEdgeState(edge->id(), ACTIVE);
+	weights_->setWeight(*edge, rng.FromTo(-1, 1));
+}
+
+void EvolutionController::deactivateEdge(const Graph::EdgeIterator& edge)
+{
+	graph_.setEdgeState(edge->id(), INACTIVE);
+	weights_->setWeight(*edge, 0.0);
 }
 
 void EvolutionController::updateTopology(Graph::EdgeIterator edge,
 		double correlation)
 {
 	if (abs(correlation) > par_.alpha)
-	{
-		graph_.setEdgeState(edge->id(), ACTIVE);
-		weights_->setWeight(*edge, rng.FromTo(-1, 1));
-	}
+		activateEdge(edge);
 	else
-	{
-		graph_.setEdgeState(edge->id(), INACTIVE);
-		weights_->setWeight(*edge, 0.0);
-	}
+		deactivateEdge(edge);
 }
 
 void EvolutionController::iterate(unsigned long steps, Observer* obs)
@@ -86,20 +103,23 @@ void EvolutionController::iterate(unsigned long steps, Observer* obs)
 	}
 }
 
+ostream& EvolutionController::openStream(string tag)
+{
+	return streams_.openStream(Filename(name(), par_, tag));
+}
+
 int EvolutionController::exec()
 {
 	setup();
 
-	ostream& averages_stream = streams_.openStream(
-			Filename(name(), par_, "averages"));
+	ostream& averages_stream = openStream("averages");
 	writeInfo(averages_stream);
 	AverageEvolutionLogger ael(graph_, *weights_);
 	ael.setStream(averages_stream);
 	ael.writeHeader(0);
 
 	SnapshotLogger snapshot_logger(graph_, *weights_, *model_);
-	snapshot_logger.setStream(
-			streams_.openStream(Filename(name(), par_, "networks")));
+	snapshot_logger.setStream(openStream("networks"));
 	snapshot_logger.writeHeader(0);
 
 	size_t next = 0;

@@ -1,10 +1,3 @@
-/*
- * BornholdtOptions.cpp
- *
- *  Created on: 19.07.2012
- *      Author: gerd
- */
-
 #include "BornholdtOptions.h"
 #include <boost/format.hpp>
 
@@ -14,13 +7,14 @@ namespace po = boost::program_options;
 BornholdtOptions::BornholdtOptions() :
 		par_(), allOptions_("Allowed options")
 {
-	allOptions_.add_options()("help,h", "This help message.");
-	init();
+	setup();
 }
 
 
-void BornholdtOptions::init()
+void BornholdtOptions::setup()
 {
+	allOptions_.add_options()("help,h", "This help message.");
+
 	po::options_description modelOpts("Model parameters"), simOpts(
 			"Simulation parameters"), scanOpts("Scan options");
 
@@ -49,20 +43,24 @@ void BornholdtOptions::init()
 	allOptions_.add(modelOpts).add(simOpts).add(scanOpts);
 }
 
+void BornholdtOptions::getOptionsFromCommandLine(int argc, char** argv)
+{
+	po::store(po::parse_command_line(argc, argv, allOptions_), vm_);
+	po::notify(vm_);
+}
+
+bool BornholdtOptions::isHelpRequested() const
+{
+	return vm_.count("help") > 0;
+}
+
 void BornholdtOptions::parseCommandLine(int argc, char** argv)
 {
 	try
 	{
-		po::store(po::parse_command_line(argc, argv, allOptions_), vm_);
-		po::notify(vm_);
+		getOptionsFromCommandLine(argc, argv);
 	} catch (po::error& e)
 	{
 		throw ParsingError(e);
 	}
-	if (vm_.count("help"))
-		throw UsageError("");
-
-	if (par_.mode == "scan" && par_.file.empty())
-		throw ParsingError("Must provide file name in scan mode.");
 }
-
