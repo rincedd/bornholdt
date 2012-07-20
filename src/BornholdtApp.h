@@ -9,22 +9,22 @@
 #define BORNHOLDTAPP_H_
 
 #include "BornholdtOptions.h"
+#include "Controller.h"
 #include <memory>
-
-class Controller;
 
 class BornholdtApp
 {
 public:
-	BornholdtApp();
-
 	void parseCommandLine(int argc, char** argv);
 	int exec();
 private:
 	void showHelpAndExitIfRequested();
-	std::auto_ptr<Controller> createController();
+	void createController();
+	int executeController();
+
 private:
 	BornholdtOptions opts_;
+	std::auto_ptr<Controller> controller_;
 };
 
 #endif /* BORNHOLDTAPP_H_ */

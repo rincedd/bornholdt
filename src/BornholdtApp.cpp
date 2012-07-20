@@ -2,12 +2,9 @@
 
 #include "BornholdtApp.h"
 #include "EvolutionController.h"
+#include "ScanController.h"
 
 using namespace std;
-
-BornholdtApp::BornholdtApp() : opts_()
-{
-}
 
 void BornholdtApp::parseCommandLine(int argc, char** argv)
 {
@@ -30,20 +27,37 @@ void BornholdtApp::showHelpAndExitIfRequested()
 	}
 }
 
-auto_ptr<Controller> BornholdtApp::createController()
+void BornholdtApp::createController()
 {
 	if (opts_.params().mode == "evolve")
 	{
-		auto_ptr<Controller> controller(new EvolutionController(opts_.params()));
-		controller->setName("evol");
-		return controller;
+		controller_.reset(new EvolutionController(opts_.params()));
+		controller_->setName("evol");
 	}
-	throw std::runtime_error("Unknown operation mode");
+	else if (opts_.params().mode == "scan")
+	{
+		controller_.reset(new ScanController(opts_.params()));
+		controller_->setName("scan");
+	}
+	else
+		throw std::runtime_error("Unknown operation mode");
+}
+
+int BornholdtApp::executeController()
+{
+	try
+	{
+		return controller_->exec();
+	} catch (exception& e)
+	{
+		cerr << e.what() << "\n";
+	}
+	return 1;
 }
 
 int BornholdtApp::exec()
 {
 	showHelpAndExitIfRequested();
-	auto_ptr<Controller> controller = createController();
-	return controller->exec();
+	createController();
+	return executeController();
 }

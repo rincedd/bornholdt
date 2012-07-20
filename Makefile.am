@@ -7,6 +7,7 @@ bornholdt_SOURCES = \
 	src/BornholdtApp.cpp \
 	src/model/BornholdtModel.cpp \
 	src/EvolutionController.cpp	\
+	src/ScanController.cpp	\
 	src/BornholdtOptions.cpp \
 	src/model/GraphStateReader.cpp \
 	src/model/GraphStateWriter.cpp
