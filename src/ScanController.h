@@ -27,13 +27,15 @@ private:
 	std::ostream& openStream(std::string tag);
 	void checkNetworkFilename();
 	std::auto_ptr<std::istream> openInputStream(std::string fileName);
+	void updateTopology();
 
 private:
 	BornholdtParameters par_;
 	largenet::Graph graph_;
-	std::auto_ptr<EdgeWeights> weights_;
+	std::auto_ptr<EdgeWeights> weights_, orig_weights_;
 	std::auto_ptr<BornholdtModel> model_;
 	OFStreamManager streams_;
+	double scan_par_;
 };
 
 #endif /* SCANCONTROLLER_H_ */

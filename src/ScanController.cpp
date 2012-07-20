@@ -3,12 +3,15 @@
 #include <myrng/myrngWELL.h>
 #include "model/GraphStateReader.h"
 #include "Filename.h"
+#include "loggers/AverageEvolutionLogger.h"
+#include "StepRepeater.h"
 
 using namespace std;
 using namespace largenet;
 
 ScanController::ScanController(BornholdtParameters par) :
-		par_(par), graph_(1, 2), weights_(0), model_(0), streams_()
+		par_(par), graph_(1, 2), weights_(0), orig_weights_(0), model_(0), streams_(), scan_par_(
+				par.scan_low)
 {
 	initRandomNumberGenerator();
 }
@@ -59,6 +62,7 @@ void ScanController::loadNetwork()
 	GraphStateReader reader;
 	reader.createFromStream(*openInputStream(par_.file), graph_, *weights_,
 			*model_);
+	orig_weights_.reset(new EdgeWeights(*weights_));
 }
 
 void ScanController::setup()
@@ -78,8 +82,36 @@ ostream& ScanController::openStream(string tag)
 	return streams_.openStream(Filename(name(), par_, tag));
 }
 
+void ScanController::updateTopology()
+{
+	// FIXME this is stupid, as we are interested in the average connectivity...
+	weights_->assign(*orig_weights_);
+	weights_->scale(scan_par_);
+}
+
 int ScanController::exec()
 {
 	setup();
+
+	size_t iterations = 0;
+
+	ostream& scan_stream = openStream("scan");
+	writeInfo(scan_stream);
+	AverageEvolutionLogger scan_logger(graph_, *weights_);
+	scan_logger.setStream(scan_stream);
+	scan_logger.writeHeader(iterations);
+
+	double step = (par_.scan_high - par_.scan_low) / par_.num_topological_updates;
+	scan_par_ = par_.scan_low;
+	updateTopology();
+	for (; iterations < par_.num_topological_updates; ++iterations)
+	{
+		StepRepeater stepper(*model_);
+		stepper.makeSteps(par_.num_iterations);
+		scan_logger.log(scan_par_);
+		updateTopology();
+		scan_par_ += step;
+	}
+	scan_logger.log(iterations);
 	return 0;
 }
