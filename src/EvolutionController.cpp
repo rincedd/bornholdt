@@ -129,6 +129,7 @@ int EvolutionController::exec()
 		}
 		updateTopology(edge, corr_obs.mean());
 	}
+	snapshot_logger.log(par_.num_topological_updates);
 	ael.log(par_.num_topological_updates);
 	return 0;
 }
