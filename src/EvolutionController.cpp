@@ -4,7 +4,7 @@
 #include "EvolutionController.h"
 #include <largenet2/generators/generators.h>
 #include "loggers/AverageEvolutionLogger.h"
-#include "Observer.h"
+#include "StepRepeater.h"
 #include "CorrelationObserver.h"
 #include "Filename.h"
 #include "model/edge_states.h"
@@ -12,7 +12,7 @@
 
 using namespace std;
 using namespace largenet;
-using largenet::generators::util::random_from;
+using namespace myrng::util;
 
 EvolutionController::EvolutionController(BornholdtParameters par) :
 		par_(par), graph_(1, 2), weights_(0), model_(0), streams_()
@@ -92,17 +92,6 @@ void EvolutionController::updateTopology(Graph::EdgeIterator edge,
 	else
 		deactivateEdge(edge);
 }
-
-void EvolutionController::iterate(unsigned long steps, Observer* obs)
-{
-	for (unsigned long i = 0; i < steps; ++i)
-	{
-		model_->step();
-		if (obs != 0)
-			obs->notify();
-	}
-}
-
 ostream& EvolutionController::openStream(string tag)
 {
 	return streams_.openStream(Filename(name(), par_, tag));
@@ -125,12 +114,13 @@ int EvolutionController::exec()
 	size_t next = 0;
 	for (size_t i = 0; i < par_.num_topological_updates; ++i)
 	{
-		iterate(par_.num_iterations / 2);
-		Graph::EdgeIterator edge = myrng::util::random_from(graph_.edges(),
-				rng);
+		StepRepeater stepper(*model_);
+		stepper.makeSteps(par_.num_iterations / 2);
+		Graph::EdgeIterator edge = random_from(graph_.edges(), rng);
 		CorrelationObserver corr_obs(model_->spin(edge->source()->id()),
 				model_->spin(edge->target()->id()));
-		iterate(par_.num_iterations / 2, &corr_obs);
+		stepper.addObserver(&corr_obs);
+		stepper.makeSteps(par_.num_iterations / 2);
 		ael.log(i);
 		if (i >= next)
 		{

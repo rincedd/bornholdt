@@ -8,18 +8,14 @@
 #include "params.h"
 #include <memory>
 
-class Observer;
-
 class EvolutionController: public Controller
 {
 public:
 	EvolutionController(BornholdtParameters par);
 	int exec();
-	virtual ~EvolutionController() {}
 	void writeInfo(std::ostream& strm) const;
 private:
 	void setup();
-	void iterate(unsigned long steps, Observer* obs = 0);
 	void updateTopology(largenet::Graph::EdgeIterator edge, double correlation);
 	void initRandomNumberGenerator();
 	void storeRandomNumberGeneratorSeed();

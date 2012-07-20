@@ -8,6 +8,7 @@
 #ifndef BORNHOLDTMODEL_H_
 #define BORNHOLDTMODEL_H_
 
+#include "../Stepper.h"
 #include "EdgeWeights.h"
 #include <largenet2.h>
 #include <stdexcept>
@@ -17,7 +18,7 @@ enum NodeState
 	DOWN = -1, UP = 1
 };
 
-class BornholdtModel
+class BornholdtModel: public Stepper
 {
 public:
 	struct Params
