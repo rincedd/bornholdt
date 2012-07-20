@@ -19,10 +19,13 @@ BornholdtModel::BornholdtModel(Graph& g, EdgeWeights& w, Params p) :
 
 void BornholdtModel::init()
 {
-	BOOST_FOREACH(Node& n, net_.nodes())
+	BOOST_FOREACH(short& spin, spins_)
 	{
-		spins_[n.id()] = rng.Chance(0.5) ? UP : DOWN;
-		thresholds_[n.id()] = rng.GaussianPolar(par_.mu, par_.epsilon);
+		spin = rng.Chance(0.5) ? UP : DOWN;
+	}
+	BOOST_FOREACH(double& threshold, thresholds_)
+	{
+		threshold = rng.GaussianPolar(par_.mu, par_.epsilon);
 	}
 }
 

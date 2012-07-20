@@ -42,7 +42,11 @@ public:
 	void resize(size_t n)
 	{
 		if (n != spins_.size())
-			spins_.resize(n, DOWN);
+		{
+			spins_.resize(n);
+			thresholds_.resize(n);
+		}
+		init();
 	}
 	void init();
 	void step();
