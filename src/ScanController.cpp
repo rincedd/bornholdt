@@ -84,7 +84,6 @@ ostream& ScanController::openStream(string tag)
 
 void ScanController::updateTopology()
 {
-	// FIXME this is stupid, as we are interested in the average connectivity...
 	weights_->assign(*orig_weights_);
 	weights_->scale(scan_par_);
 }
@@ -107,7 +106,9 @@ int ScanController::exec()
 	for (; iterations < par_.num_topological_updates; ++iterations)
 	{
 		StepRepeater stepper(*model_);
-		stepper.makeSteps(par_.num_iterations);
+		stepper.makeSteps(par_.num_iterations / 2);
+		// observe correlations here
+		stepper.makeSteps(par_.num_iterations / 2);
 		scan_logger.log(scan_par_);
 		updateTopology();
 		scan_par_ += step;

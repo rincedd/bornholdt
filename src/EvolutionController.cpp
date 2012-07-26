@@ -5,7 +5,7 @@
 #include <largenet2/generators/generators.h>
 #include "loggers/AverageEvolutionLogger.h"
 #include "StepRepeater.h"
-#include "CorrelationObserver.h"
+#include "SingleCorrelationObserver.h"
 #include "Filename.h"
 #include "model/edge_states.h"
 #include "loggers/SnapshotLogger.h"
@@ -117,7 +117,7 @@ int EvolutionController::exec()
 		StepRepeater stepper(*model_);
 		stepper.makeSteps(par_.num_iterations / 2);
 		Graph::EdgeIterator edge = random_from(graph_.edges(), rng);
-		CorrelationObserver corr_obs(model_->spin(edge->source()->id()),
+		SingleCorrelationObserver corr_obs(model_->spin(edge->source()->id()),
 				model_->spin(edge->target()->id()));
 		stepper.addObserver(&corr_obs);
 		stepper.makeSteps(par_.num_iterations / 2);
