@@ -20,7 +20,7 @@ public:
 		meanCorrelation_ = value;
 	}
 
-	void setNonZeroCorrelationFraction(double value)
+	void setAboveAlphaFraction(double value)
 	{
 		nonZeroCorrelationFraction_ = value;
 	}

@@ -41,12 +41,12 @@ public:
 		return mean / correlations_.size();
 	}
 
-	double nonZeroFraction() const
+	double fractionWithAbsoluteValueAbove(double threshold = 0.0) const
 	{
 		double frac = 0;
 		BOOST_FOREACH(const CorrelationAccumulator& acc, correlations_)
 		{
-			if (abs(acc.mean()) > 0.0)
+			if (abs(acc.mean()) > threshold)
 				frac += 1;
 		}
 		return frac / correlations_.size();

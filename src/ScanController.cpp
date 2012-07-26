@@ -122,8 +122,9 @@ int ScanController::exec()
 		stepper.addObserver(&correlation_observer);
 		stepper.makeSteps(par_.num_iterations / 2);
 		scan_logger.setMeanCorrelation(correlation_observer.mean());
-		scan_logger.setNonZeroCorrelationFraction(
-				correlation_observer.nonZeroFraction());
+		scan_logger.setAboveAlphaFraction(
+				correlation_observer.fractionWithAbsoluteValueAbove(
+						par_.alpha));
 		scan_logger.log(scan_par_);
 		updateTopology();
 		scan_par_ += step;
