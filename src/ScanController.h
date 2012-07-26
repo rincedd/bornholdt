@@ -22,6 +22,7 @@ private:
 	void initRandomNumberGenerator();
 	void storeRandomNumberGeneratorSeed();
 	void loadNetwork();
+	void storeNetworkParameters();
 	void initEdgeWeights();
 	void initModel();
 	std::ostream& openStream(std::string tag);

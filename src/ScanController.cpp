@@ -63,7 +63,15 @@ void ScanController::loadNetwork()
 	GraphStateReader reader;
 	reader.createFromStream(*openInputStream(par_.file), graph_, *weights_,
 			*model_);
+	storeNetworkParameters();
 	orig_weights_.reset(new EdgeWeights(*weights_));
+}
+
+void ScanController::storeNetworkParameters()
+{
+	par_.num_nodes = graph_.numberOfNodes();
+	par_.average_degree = static_cast<double>(graph_.numberOfEdges())
+			/ graph_.numberOfNodes();
 }
 
 void ScanController::setup()
@@ -120,6 +128,6 @@ int ScanController::exec()
 		updateTopology();
 		scan_par_ += step;
 	}
-	scan_logger.log(iterations);
+	scan_logger.log(scan_par_);
 	return 0;
 }

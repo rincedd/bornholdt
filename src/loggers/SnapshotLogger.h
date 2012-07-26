@@ -31,7 +31,7 @@ public:
 
 	void writeHeader(double t)
 	{
-		stream() << "# source\ttarget\tweight\tspin_s\tspin_t\n";
+		stream() << "# source\ttarget\tweight\tstate\tspin_s\tspin_t\n";
 	}
 
 private:

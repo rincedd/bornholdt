@@ -27,6 +27,7 @@ struct edge_info
 {
 	node_info source;
 	node_info target;
+	edge_state_t state;
 	double weight;
 };
 
@@ -64,7 +65,7 @@ void GraphStateReader::createFromStream(istream& strm, Graph& graph,
 		maxNodeID = max(e.source.id, maxNodeID);
 		maxNodeID = max(e.target.id, maxNodeID);
 
-		ss >> e.weight >> e.source.spin >> e.target.spin;
+		ss >> e.weight >> e.state >> e.source.spin >> e.target.spin;
 		if (ss.fail())
 			throw std::runtime_error("Cannot read input file");
 
@@ -81,6 +82,7 @@ void GraphStateReader::createFromStream(istream& strm, Graph& graph,
 	BOOST_FOREACH(detail::edge_info& e, edges)
 	{
 		edge_id_t eid = graph.addEdge(e.source.id, e.target.id, true);
+		graph.setEdgeState(eid, e.state);
 		weights.setWeight(*graph.edge(eid), e.weight);
 		model.spin(e.source.id) = e.source.spin;
 		model.spin(e.target.id) = e.target.spin;
