@@ -3,8 +3,9 @@
 #include <myrng/myrngWELL.h>
 #include "model/GraphStateReader.h"
 #include "Filename.h"
-#include "loggers/AverageEvolutionLogger.h"
 #include "StepRepeater.h"
+#include "loggers/ScanLogger.h"
+#include "CorrelationObserver.h"
 
 using namespace std;
 using namespace largenet;
@@ -96,11 +97,12 @@ int ScanController::exec()
 
 	ostream& scan_stream = openStream("scan");
 	writeInfo(scan_stream);
-	AverageEvolutionLogger scan_logger(graph_, *weights_);
+	ScanLogger scan_logger(graph_, *weights_);
 	scan_logger.setStream(scan_stream);
 	scan_logger.writeHeader(iterations);
 
-	double step = (par_.scan_high - par_.scan_low) / par_.num_topological_updates;
+	double step = (par_.scan_high - par_.scan_low)
+			/ par_.num_topological_updates;
 	scan_par_ = par_.scan_low;
 	updateTopology();
 	for (; iterations < par_.num_topological_updates; ++iterations)
@@ -108,7 +110,12 @@ int ScanController::exec()
 		StepRepeater stepper(*model_);
 		stepper.makeSteps(par_.num_iterations / 2);
 		// observe correlations here
+		CorrelationObserver correlation_observer(graph_, *model_);
+		stepper.addObserver(&correlation_observer);
 		stepper.makeSteps(par_.num_iterations / 2);
+		scan_logger.setMeanCorrelation(correlation_observer.mean());
+		scan_logger.setNonZeroCorrelationFraction(
+				correlation_observer.nonZeroFraction());
 		scan_logger.log(scan_par_);
 		updateTopology();
 		scan_par_ += step;

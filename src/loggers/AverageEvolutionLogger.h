@@ -22,10 +22,6 @@ public:
 	{
 	}
 
-	virtual ~AverageEvolutionLogger()
-	{
-	}
-
 	void log(double t)
 	{
 		double sigma = 0;

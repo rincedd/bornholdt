@@ -11,21 +11,33 @@ class CorrelationAccumulator
 {
 	typedef ba::accumulator_set<double, ba::stats<ba::tag::mean> > mean_acc_t;
 public:
-	CorrelationAccumulator(const short& state_i, const short& state_j) :
-			state_i_(state_i), state_j_(state_j)
+	CorrelationAccumulator() :
+			state_i_(0), state_j_(0)
 	{
 	}
+	CorrelationAccumulator(const short& state_i, const short& state_j) :
+			state_i_(&state_i), state_j_(&state_j)
+	{
+	}
+
+	void setObservedStates(const short& state_i, const short& state_j)
+	{
+		state_i_ = &state_i;
+		state_j_ = &state_j;
+	}
+
 	void update()
 	{
-		acc_(state_i_ * state_j_);
+		if ((state_i_ != 0) && (state_j_ != 0))
+			acc_((*state_i_) * (*state_j_));
 	}
 	double mean() const
 	{
 		return ba::mean(acc_);
 	}
 private:
-	const short& state_i_;
-	const short& state_j_;
+	const short* state_i_;
+	const short* state_j_;
 	mean_acc_t acc_;
 };
 
