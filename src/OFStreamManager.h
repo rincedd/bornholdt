@@ -13,7 +13,7 @@ public:
 	std::ostream& openStream(std::string filename)
 	{
 		std::auto_ptr<std::ofstream> o(new std::ofstream(filename.c_str()));
-		if (o->bad())
+		if (o->fail())
 		{
 			o->close();
 			throw("Could not open " + filename + " for writing!\n");

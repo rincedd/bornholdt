@@ -52,7 +52,7 @@ void ScanController::checkNetworkFilename()
 auto_ptr<istream> ScanController::openInputStream(string fileName)
 {
 	auto_ptr<istream> input_stream(new ifstream(fileName.c_str()));
-	if (input_stream->bad())
+	if (input_stream->fail())
 		throw std::runtime_error("Cannot read from input file");
 	return input_stream;
 }
