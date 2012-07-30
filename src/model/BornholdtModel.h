@@ -59,6 +59,9 @@ private:
 	Params par_;
 	threshold_v thresholds_;
 	spin_v spins_;
+
+	void initSpins();
+	void initThresholds();
 };
 
 #endif /* BORNHOLDTMODEL_H_ */

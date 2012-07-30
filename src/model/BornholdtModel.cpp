@@ -17,16 +17,26 @@ BornholdtModel::BornholdtModel(Graph& g, EdgeWeights& w, Params p) :
 	init();
 }
 
-void BornholdtModel::init()
+void BornholdtModel::initSpins()
 {
 	BOOST_FOREACH(short& spin, spins_)
 	{
 		spin = rng.Chance(0.5) ? UP : DOWN;
 	}
+}
+
+void BornholdtModel::initThresholds()
+{
 	BOOST_FOREACH(double& threshold, thresholds_)
 	{
 		threshold = rng.GaussianPolar(par_.mu, par_.epsilon);
 	}
+}
+
+void BornholdtModel::init()
+{
+	initSpins();
+	initThresholds();
 }
 
 void BornholdtModel::step()
