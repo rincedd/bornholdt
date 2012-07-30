@@ -37,7 +37,8 @@ void BornholdtModel::step()
 		double inputs = thresholds_[n.id()];
 		BOOST_FOREACH(Edge* e, n.outEdges())
 		{
-			inputs += weights_.weight(e->id()) * spins_[e->target()->id()];
+			if (net_.edgeState(e->id()) == ACTIVE)	// weight should be zero anyway if inactive?
+				inputs += weights_.weight(e->id()) * spins_[e->target()->id()];
 		}
 		double p = coupling(inputs, par_.beta);
 		if (rng.Chance(p))

@@ -25,6 +25,10 @@ private:
 	void activateEdge(const largenet::Graph::EdgeIterator& edge);
 	void deactivateEdge(const largenet::Graph::EdgeIterator& edge);
 	std::ostream& openStream(std::string tag);
+	void initEdges();
+	void createSquareLattice();
+	void initEdgeStates();
+	void resetEdgeStates();
 
 private:
 	BornholdtParameters par_;

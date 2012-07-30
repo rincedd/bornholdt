@@ -18,8 +18,9 @@ public:
 	{
 		return str(
 				boost::format(
-						"n%1%-k%2%--beta%3%-eps%4%-mu%5%--t%6%--I%7%-alpha%8%")
-						% num_nodes % average_degree % beta % epsilon % mu
+						"n%1%-k%2%-K%3%--beta%4%-eps%5%-mu%6%--t%7%--I%8%-alpha%9%")
+						% num_nodes % average_degree
+						% average_active_connectivity % beta % epsilon % mu
 						% num_iterations % num_topological_updates % alpha);
 	}
 public:
@@ -31,6 +32,7 @@ public:
 
 	size_t num_nodes;
 	double average_degree;
+	double average_active_connectivity;
 
 	size_t num_iterations;
 	size_t num_topological_updates;
@@ -48,7 +50,8 @@ inline std::ostream& operator<<(std::ostream& out, const BornholdtParameters& p)
 	out << "# Parameters: beta = " << p.beta << ", mu = " << p.mu
 			<< ", epsilon = " << p.epsilon;
 	out << "\n# Correlation cutoff alpha = " << p.alpha;
-	out << "\n# N = " << p.num_nodes << ", <k> = " << p.average_degree;
+	out << "\n# N = " << p.num_nodes << ", <k> = " << p.average_degree
+			<< ", <K> = " << p.average_active_connectivity;
 	out << "\n# Number of iterations: " << p.num_iterations
 			<< "\n# Number of topological updates: "
 			<< p.num_topological_updates;

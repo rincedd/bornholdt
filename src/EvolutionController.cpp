@@ -3,6 +3,8 @@
 
 #include "EvolutionController.h"
 #include <largenet2/generators/generators.h>
+#include <largenet2/generators/lattice.h>
+#include <largenet2/base/converters.h>
 #include "loggers/AverageEvolutionLogger.h"
 #include "StepRepeater.h"
 #include "SingleCorrelationObserver.h"
@@ -32,14 +34,44 @@ void EvolutionController::initRandomNumberGenerator()
 	storeRandomNumberGeneratorSeed();
 }
 
-void EvolutionController::createRandomNetwork()
+void EvolutionController::initEdgeStates()
 {
-	generators::randomGnm(graph_, par_.num_nodes,
-			par_.average_degree * par_.num_nodes, rng, true);
+	edge_size_t initialInactiveEdges = static_cast<edge_size_t>(round(
+			(1.0 - par_.average_active_connectivity) * graph_.numberOfNodes()));
+	while (graph_.numberOfEdges(INACTIVE) < initialInactiveEdges)
+	{
+		Graph::EdgeStateIterator e = myrng::util::random_from(
+				graph_.edges(ACTIVE), rng);
+		graph_.setEdgeState(e.id(), INACTIVE);
+	}
+}
+
+void EvolutionController::resetEdgeStates()
+{
 	BOOST_FOREACH(Edge& e, graph_.edges())
 	{
 		graph_.setEdgeState(e.id(), ACTIVE);
 	}
+}
+
+void EvolutionController::initEdges()
+{
+	resetEdgeStates();
+	initEdgeStates();
+	initEdgeWeights();
+}
+
+void EvolutionController::createSquareLattice()
+{
+	size_t side_length = static_cast<size_t>(round(sqrt(par_.num_nodes)));
+	generators::mooreLattice2DPeriodic(graph_, side_length, side_length);
+	converters::toDirected(graph_);
+}
+
+void EvolutionController::createRandomNetwork()
+{
+	generators::randomGnm(graph_, par_.num_nodes,
+			par_.average_degree * par_.num_nodes, rng, true);
 }
 
 void EvolutionController::initEdgeWeights()
@@ -62,7 +94,7 @@ void EvolutionController::initModel()
 void EvolutionController::setup()
 {
 	createRandomNetwork();
-	initEdgeWeights();
+	initEdges();
 	initModel();
 }
 
