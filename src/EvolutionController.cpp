@@ -1,17 +1,17 @@
 #include <myrng/myrngWELL.h>
 #include <myrng/util.h>
 
-#include "EvolutionController.h"
 #include <largenet2/generators/generators.h>
 #include <largenet2/generators/lattice.h>
 #include <largenet2/base/converters.h>
-#include "loggers/AverageEvolutionLogger.h"
+#include <stdexcept>
+#include "EvolutionController.h"
+#include "model/edge_states.h"
+#include "Filename.h"
 #include "StepRepeater.h"
 #include "SingleCorrelationObserver.h"
-#include "Filename.h"
-#include "model/edge_states.h"
+#include "loggers/AverageEvolutionLogger.h"
 #include "loggers/SnapshotLogger.h"
-#include <stdexcept>
 
 using namespace std;
 using namespace largenet;
@@ -75,8 +75,8 @@ void EvolutionController::storeNetworkParameters()
 
 void EvolutionController::createSquareLattice()
 {
-	size_t side_length = static_cast<size_t>(round(sqrt(par_.num_nodes)));
-	generators::mooreLattice2DPeriodic(graph_, side_length, side_length);
+	size_t sideLength = static_cast<size_t>(round(sqrt(par_.num_nodes)));
+	generators::mooreLattice2DPeriodic(graph_, sideLength, sideLength);
 	converters::toDirected(graph_);
 	storeNetworkParameters();
 }
@@ -156,15 +156,15 @@ int EvolutionController::exec()
 {
 	setup();
 
-	ostream& averages_stream = openStream("averages");
-	writeInfo(averages_stream);
-	AverageEvolutionLogger ael(graph_, *weights_);
-	ael.setStream(averages_stream);
-	ael.writeHeader(0);
+	ostream& averagesStream = openStream("averages");
+	writeInfo(averagesStream);
+	AverageEvolutionLogger evolutionLogger(graph_, *weights_);
+	evolutionLogger.setStream(averagesStream);
+	evolutionLogger.writeHeader(0);
 
-	SnapshotLogger snapshot_logger(graph_, *weights_, *model_);
-	snapshot_logger.setStream(openStream("networks"));
-	snapshot_logger.writeHeader(0);
+	SnapshotLogger snapshotLogger(graph_, *weights_, *model_);
+	snapshotLogger.setStream(openStream("networks"));
+	snapshotLogger.writeHeader(0);
 
 	size_t next = 0;
 	for (size_t i = 0; i < par_.num_topological_updates; ++i)
@@ -172,20 +172,21 @@ int EvolutionController::exec()
 		StepRepeater stepper(*model_);
 		stepper.makeSteps(par_.num_iterations / 2);
 		Graph::EdgeIterator edge = random_from(graph_.edges(), rng);
-		SingleCorrelationObserver corr_obs(model_->spin(edge->source()->id()),
+		SingleCorrelationObserver correlationObserver(
+				model_->spin(edge->source()->id()),
 				model_->spin(edge->target()->id()));
-		stepper.addObserver(&corr_obs);
+		stepper.addObserver(&correlationObserver);
 		stepper.makeSteps(par_.num_iterations / 2);
-		ael.log(i);
+		evolutionLogger.log(i);
 		if (i >= next)
 		{
-			snapshot_logger.log(i);
+			snapshotLogger.log(i);
 			next += par_.snapshot_interval;
 		}
-		updateTopology(edge, corr_obs.mean());
+		updateTopology(edge, correlationObserver.mean());
 		model_->initThresholds();
 	}
-	snapshot_logger.log(par_.num_topological_updates);
-	ael.log(par_.num_topological_updates);
+	snapshotLogger.log(par_.num_topological_updates);
+	evolutionLogger.log(par_.num_topological_updates);
 	return 0;
 }
