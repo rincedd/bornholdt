@@ -123,7 +123,7 @@ void EvolutionController::setup()
 
 void EvolutionController::writeInfo(ostream& strm) const
 {
-	strm << "# Bornholdt/Röhl model on ER network.\n";
+	strm << "# Bornholdt/Röhl model.\n";
 	strm << par_ << "\n";
 }
 
@@ -183,6 +183,7 @@ int EvolutionController::exec()
 			next += par_.snapshot_interval;
 		}
 		updateTopology(edge, corr_obs.mean());
+		model_->initThresholds();
 	}
 	snapshot_logger.log(par_.num_topological_updates);
 	ael.log(par_.num_topological_updates);

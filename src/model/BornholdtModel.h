@@ -49,6 +49,7 @@ public:
 		init();
 	}
 	void init();
+	void initThresholds();
 	void step();
 	spin_v::const_reference spin(largenet::node_id_t i) const { return spins_[i]; }
 	spin_v::reference spin(largenet::node_id_t i) { return spins_[i]; }
@@ -61,7 +62,6 @@ private:
 	spin_v spins_;
 
 	void initSpins();
-	void initThresholds();
 	double computeInputs(const largenet::Node& n) const;
 };
 
