@@ -39,17 +39,23 @@ void BornholdtModel::init()
 	initThresholds();
 }
 
+double BornholdtModel::computeInputs(const Node& n) const
+{
+	double inputs = thresholds_[n.id()];
+	BOOST_FOREACH(Edge* e, n.outEdges())
+	{
+		if (net_.edgeState(e->id()) == ACTIVE)// weight should be zero anyway if inactive?
+			inputs += weights_.weight(e->id()) * spins_[e->target()->id()];
+	}
+	return inputs;
+}
+
 void BornholdtModel::step()
 {
 	spin_v new_spins(spins_);
 	BOOST_FOREACH(Node& n, net_.nodes())
 	{
-		double inputs = thresholds_[n.id()];
-		BOOST_FOREACH(Edge* e, n.outEdges())
-		{
-			if (net_.edgeState(e->id()) == ACTIVE)	// weight should be zero anyway if inactive?
-				inputs += weights_.weight(e->id()) * spins_[e->target()->id()];
-		}
+		double inputs = computeInputs(n);
 		double p = coupling(inputs, par_.beta);
 		if (rng.Chance(p))
 			new_spins[n.id()] = UP;

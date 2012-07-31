@@ -62,6 +62,7 @@ private:
 
 	void initSpins();
 	void initThresholds();
+	double computeInputs(const largenet::Node& n) const;
 };
 
 #endif /* BORNHOLDTMODEL_H_ */
