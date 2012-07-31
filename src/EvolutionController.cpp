@@ -11,6 +11,7 @@
 #include "Filename.h"
 #include "model/edge_states.h"
 #include "loggers/SnapshotLogger.h"
+#include <stdexcept>
 
 using namespace std;
 using namespace largenet;
@@ -36,8 +37,13 @@ void EvolutionController::initRandomNumberGenerator()
 
 void EvolutionController::initEdgeStates()
 {
-	edge_size_t initialInactiveEdges = static_cast<edge_size_t>(round(
-			(1.0 - par_.average_active_connectivity) * graph_.numberOfNodes()));
+	edge_size_t numberOfActiveEdges = static_cast<edge_size_t>(round(
+			par_.average_active_connectivity * graph_.numberOfNodes()));
+	if (numberOfActiveEdges > graph_.numberOfEdges())
+		throw std::runtime_error(
+				"Average connectivity cannot exceed average degree");
+	edge_size_t initialInactiveEdges = graph_.numberOfEdges()
+			- numberOfActiveEdges;
 	while (graph_.numberOfEdges(INACTIVE) < initialInactiveEdges)
 	{
 		Graph::EdgeStateIterator e = myrng::util::random_from(
@@ -61,11 +67,18 @@ void EvolutionController::initEdges()
 	initEdgeWeights();
 }
 
+void EvolutionController::storeNetworkParameters()
+{
+	par_.average_degree = static_cast<double>(graph_.numberOfEdges())
+			/ graph_.numberOfNodes();
+}
+
 void EvolutionController::createSquareLattice()
 {
 	size_t side_length = static_cast<size_t>(round(sqrt(par_.num_nodes)));
 	generators::mooreLattice2DPeriodic(graph_, side_length, side_length);
 	converters::toDirected(graph_);
+	storeNetworkParameters();
 }
 
 void EvolutionController::createRandomNetwork()
@@ -91,9 +104,19 @@ void EvolutionController::initModel()
 	model_.reset(new BornholdtModel(graph_, *weights_, par));
 }
 
+void EvolutionController::createNetwork()
+{
+	if (par_.network == "random")
+		createRandomNetwork();
+	else if (par_.network == "square")
+		createSquareLattice();
+	else
+		throw std::runtime_error("Unknown network type");
+}
+
 void EvolutionController::setup()
 {
-	createRandomNetwork();
+	createNetwork();
 	initEdges();
 	initModel();
 }

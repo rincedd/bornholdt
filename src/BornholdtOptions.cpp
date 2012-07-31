@@ -15,7 +15,7 @@ void BornholdtOptions::setup()
 {
 	allOptions_.add_options()("help,h", "This help message.");
 
-	po::options_description modelOpts("Model parameters"), simOpts(
+	po::options_description modelOpts("Model parameters"), netOpts("Network parameters"), simOpts(
 			"Simulation parameters"), scanOpts("Scan options");
 
 	modelOpts.add_options()
@@ -23,10 +23,13 @@ void BornholdtOptions::setup()
 			("epsilon", po::value<double>(&par_.epsilon)->default_value(0.1), "Threshold distribution width.")
 			("mu", po::value<double>(&par_.mu)->default_value(-0.1), "Threshold distribution mean.");
 
-	simOpts.add_options()
+	netOpts.add_options()
+			("network", po::value<string>(&par_.network)->default_value("random"), "Network type: random, square.")
 			("nodes,n", po::value<size_t>(&par_.num_nodes)->default_value(100), "Number of nodes.")
-			("avg-degree,k", po::value<double>(&par_.average_degree)->default_value(20), "Intended average degree of network.")
-			("avg-connectivity", po::value<double>(&par_.average_active_connectivity)->default_value(20), "Average number of active links per node.")
+			("avg-degree,k", po::value<double>(&par_.average_degree)->default_value(8), "Intended average degree of network.")
+			("avg-connectivity", po::value<double>(&par_.average_active_connectivity)->default_value(4), "Average number of active links per node.");
+
+	simOpts.add_options()
 			("iterations", po::value<size_t>(&par_.num_iterations)->default_value(200), "Number of iterations between topological updates.")
 			("updates", po::value<size_t>(&par_.num_topological_updates)->default_value(10), "Number of topological update steps.")
 			("alpha", po::value<double>(&par_.alpha)->default_value(0.8), "Correlation cutoff.")
@@ -41,7 +44,7 @@ void BornholdtOptions::setup()
 			("mode", po::value<string>(&par_.mode)->default_value("evolve"), "Operation mode: evolve, scan.")
 			("file", po::value<string>(&par_.file)->default_value(""), "Network file to load in scan mode.");
 
-	allOptions_.add(modelOpts).add(simOpts).add(scanOpts);
+	allOptions_.add(modelOpts).add(netOpts).add(simOpts).add(scanOpts);
 }
 
 void BornholdtOptions::getOptionsFromCommandLine(int argc, char** argv)

@@ -29,6 +29,8 @@ private:
 	void createSquareLattice();
 	void initEdgeStates();
 	void resetEdgeStates();
+	void createNetwork();
+	void storeNetworkParameters();
 
 private:
 	BornholdtParameters par_;
