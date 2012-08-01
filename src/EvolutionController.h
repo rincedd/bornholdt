@@ -27,6 +27,7 @@ private:
 	std::ostream& openStream(std::string tag);
 	void initEdges();
 	void createSquareLattice();
+	void createPeriodicSquareLattice();
 	void initEdgeStates();
 	void resetEdgeStates();
 	void createNetwork();

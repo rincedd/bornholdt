@@ -76,6 +76,14 @@ void EvolutionController::storeNetworkParameters()
 void EvolutionController::createSquareLattice()
 {
 	size_t sideLength = static_cast<size_t>(round(sqrt(par_.num_nodes)));
+	generators::mooreLattice2D(graph_, sideLength, sideLength);
+	converters::toDirected(graph_);
+	storeNetworkParameters();
+}
+
+void EvolutionController::createPeriodicSquareLattice()
+{
+	size_t sideLength = static_cast<size_t>(round(sqrt(par_.num_nodes)));
 	generators::mooreLattice2DPeriodic(graph_, sideLength, sideLength);
 	converters::toDirected(graph_);
 	storeNetworkParameters();
@@ -110,6 +118,8 @@ void EvolutionController::createNetwork()
 		createRandomNetwork();
 	else if (par_.network == "square")
 		createSquareLattice();
+	else if (par_.network == "periodic-square")
+		createPeriodicSquareLattice();
 	else
 		throw std::runtime_error("Unknown network type");
 }

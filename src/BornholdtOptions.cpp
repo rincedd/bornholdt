@@ -24,7 +24,7 @@ void BornholdtOptions::setup()
 			("mu", po::value<double>(&par_.mu)->default_value(-0.1), "Threshold distribution mean.");
 
 	netOpts.add_options()
-			("network", po::value<string>(&par_.network)->default_value("random"), "Network type: random, square.")
+			("network", po::value<string>(&par_.network)->default_value("random"), "Network type: random, square, periodic-square.")
 			("nodes,n", po::value<size_t>(&par_.num_nodes)->default_value(100), "Number of nodes.")
 			("avg-degree,k", po::value<double>(&par_.average_degree)->default_value(8), "Intended average degree of network.")
 			("avg-connectivity", po::value<double>(&par_.average_active_connectivity)->default_value(4), "Average number of active links per node.");
