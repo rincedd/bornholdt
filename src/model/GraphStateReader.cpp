@@ -21,6 +21,7 @@ struct node_info
 {
 	node_id_t id;
 	short spin;
+	double threshold;
 };
 
 struct edge_info
@@ -45,7 +46,7 @@ void GraphStateReader::createFromStream(istream& strm, Graph& graph,
 	string line;
 	stringstream ss;
 
-	// now read: source target weight s_s s_t
+	// now read: source target weight s_s s_t thresh_s thresh_t
 
 	while (getline(strm, line))
 	{
@@ -65,7 +66,8 @@ void GraphStateReader::createFromStream(istream& strm, Graph& graph,
 		maxNodeID = max(e.source.id, maxNodeID);
 		maxNodeID = max(e.target.id, maxNodeID);
 
-		ss >> e.weight >> e.state >> e.source.spin >> e.target.spin;
+		ss >> e.weight >> e.state >> e.source.spin >> e.target.spin
+				>> e.source.threshold >> e.target.threshold;
 		if (ss.fail())
 			throw std::runtime_error("Cannot read input file");
 
@@ -86,5 +88,7 @@ void GraphStateReader::createFromStream(istream& strm, Graph& graph,
 		weights.setWeight(*graph.edge(eid), e.weight);
 		model.spin(e.source.id) = e.source.spin;
 		model.spin(e.target.id) = e.target.spin;
+		model.threshold(e.source.id) = e.source.threshold;
+		model.threshold(e.target.id) = e.target.threshold;
 	}
 }

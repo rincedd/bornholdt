@@ -53,6 +53,8 @@ public:
 	void step();
 	spin_v::const_reference spin(largenet::node_id_t i) const { return spins_[i]; }
 	spin_v::reference spin(largenet::node_id_t i) { return spins_[i]; }
+	threshold_v::const_reference threshold(largenet::node_id_t i) const { return thresholds_[i]; }
+	threshold_v::reference threshold(largenet::node_id_t i) { return thresholds_[i]; }
 
 private:
 	largenet::Graph& net_;
