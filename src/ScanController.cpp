@@ -63,7 +63,6 @@ void ScanController::loadNetwork()
 	GraphStateReader reader;
 	reader.createFromStream(*openInputStream(par_.file), graph_, *weights_,
 			*model_);
-	storeNetworkParameters();
 	orig_weights_.reset(new EdgeWeights(*weights_));
 }
 
@@ -81,6 +80,7 @@ void ScanController::setup()
 	initEdgeWeights();
 	initModel();
 	loadNetwork();
+	storeNetworkParameters();
 }
 
 void ScanController::writeInfo(ostream& strm) const

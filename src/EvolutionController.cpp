@@ -78,7 +78,6 @@ void EvolutionController::createSquareLattice()
 	size_t sideLength = static_cast<size_t>(round(sqrt(par_.num_nodes)));
 	generators::mooreLattice2D(graph_, sideLength, sideLength);
 	converters::toDirected(graph_);
-	storeNetworkParameters();
 }
 
 void EvolutionController::createPeriodicSquareLattice()
@@ -86,7 +85,6 @@ void EvolutionController::createPeriodicSquareLattice()
 	size_t sideLength = static_cast<size_t>(round(sqrt(par_.num_nodes)));
 	generators::mooreLattice2DPeriodic(graph_, sideLength, sideLength);
 	converters::toDirected(graph_);
-	storeNetworkParameters();
 }
 
 void EvolutionController::createRandomNetwork()
@@ -127,6 +125,7 @@ void EvolutionController::createNetwork()
 void EvolutionController::setup()
 {
 	createNetwork();
+	storeNetworkParameters();
 	initEdges();
 	initModel();
 }
