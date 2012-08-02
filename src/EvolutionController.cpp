@@ -193,7 +193,6 @@ int EvolutionController::exec()
 			next += par_.snapshot_interval;
 		}
 		updateTopology(edge, correlationObserver.mean());
-		model_->initThresholds();
 	}
 	snapshotLogger.log(par_.num_topological_updates);
 	evolutionLogger.log(par_.num_topological_updates);
