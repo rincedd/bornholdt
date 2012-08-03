@@ -127,6 +127,12 @@ int ScanController::exec()
 		scan_logger.setAboveAlphaFraction(
 				correlation_observer.fractionWithAbsoluteValueAbove(
 						par_.alpha));
+		scan_logger.setBelowAlphaFraction(
+				correlation_observer.fractionWithAbsoluteValueBelow(
+						par_.alpha));
+		scan_logger.setSwitchedFraction(
+				static_cast<double>(model_->numberOfNodesThatSwitched())
+						/ model_->size());
 		scan_logger.log(scan_par_);
 		updateTopology();
 		scan_par_ += step;

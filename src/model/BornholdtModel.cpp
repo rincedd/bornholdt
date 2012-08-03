@@ -33,10 +33,16 @@ void BornholdtModel::initThresholds()
 	}
 }
 
+void BornholdtModel::initSwitchInfo()
+{
+	switchInfo_.assign(spins_.size(), false);
+}
+
 void BornholdtModel::init()
 {
 	initSpins();
 	initThresholds();
+	initSwitchInfo();
 }
 
 double BornholdtModel::computeInputs(const Node& n) const
@@ -61,6 +67,8 @@ void BornholdtModel::step()
 			new_spins[n.id()] = UP;
 		else
 			new_spins[n.id()] = DOWN;
+		if (!switchInfo_[n.id()] && (new_spins[n.id()] != spins_[n.id()]))
+			switchInfo_[n.id()] = true;
 	}
 	spins_ = new_spins;
 }

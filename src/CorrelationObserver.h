@@ -51,6 +51,17 @@ public:
 		}
 		return frac / correlations_.size();
 	}
+
+	double fractionWithAbsoluteValueBelow(double threshold = 0.0) const
+	{
+		double frac = 0;
+		BOOST_FOREACH(const CorrelationAccumulator& acc, correlations_)
+		{
+			if (abs(acc.mean()) < threshold)
+				frac += 1;
+		}
+		return frac / correlations_.size();
+	}
 private:
 	std::vector<CorrelationAccumulator> correlations_;
 };
