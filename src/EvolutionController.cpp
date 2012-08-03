@@ -151,7 +151,7 @@ void EvolutionController::deactivateEdge(const Graph::EdgeIterator& edge)
 void EvolutionController::updateTopology(Graph::EdgeIterator edge,
 		double correlation)
 {
-	if (abs(correlation) > par_.alpha)
+	if (abs(correlation) >= par_.alpha)
 		activateEdge(edge);
 	else
 		deactivateEdge(edge);
