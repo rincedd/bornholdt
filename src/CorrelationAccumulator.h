@@ -29,11 +29,11 @@ public:
 	void update()
 	{
 		if ((state_i_ != 0) && (state_j_ != 0))
-			acc_((*state_i_) * (*state_j_));
+			acc_(*state_i_ + *state_j_);
 	}
 	double mean() const
 	{
-		return ba::mean(acc_);
+		return ba::mean(acc_) / 2.0;
 	}
 private:
 	const short* state_i_;

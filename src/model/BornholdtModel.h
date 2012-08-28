@@ -17,7 +17,7 @@
 
 enum NodeState
 {
-	DOWN = -1, UP = 1
+	QUIET = 0, SPIKING = 1
 };
 
 class BornholdtModel: public Stepper
@@ -30,7 +30,8 @@ public:
 		double mu; 		///< threshold distribution mean
 	};
 
-	typedef std::vector<short> spin_v;	///< vector of neuron states (+1 or -1)
+	typedef std::vector<double> state_v;
+	typedef std::vector<short> spike_v;	///< vector of neuron outputs (quiet or spiking)
 	typedef std::vector<double> threshold_v;
 	typedef std::vector<bool> switch_info_v;
 
@@ -39,29 +40,30 @@ public:
 
 	size_t size() const
 	{
-		return spins_.size();
+		return outputs_.size();
 	}
 
 	void resize(size_t n)
 	{
-		if (n != spins_.size())
+		if (n != outputs_.size())
 		{
-			spins_.resize(n);
+			states_.resize(n);
+			outputs_.resize(n);
 			thresholds_.resize(n);
-			switchInfo_.resize(n);
+			spikeInfo_.resize(n);
 		}
 		init();
 	}
 	void init();
 	void initThresholds();
 	void step();
-	spin_v::const_reference spin(largenet::node_id_t i) const
+	spike_v::const_reference output(largenet::node_id_t i) const
 	{
-		return spins_[i];
+		return outputs_[i];
 	}
-	spin_v::reference spin(largenet::node_id_t i)
+	spike_v::reference output(largenet::node_id_t i)
 	{
-		return spins_[i];
+		return outputs_[i];
 	}
 	threshold_v::const_reference threshold(largenet::node_id_t i) const
 	{
@@ -74,7 +76,7 @@ public:
 
 	size_t numberOfNodesThatSwitched() const
 	{
-		return std::count_if(switchInfo_.begin(), switchInfo_.end(),
+		return std::count_if(spikeInfo_.begin(), spikeInfo_.end(),
 				std::bind1st(std::equal_to<bool>(), true));
 	}
 
@@ -83,10 +85,11 @@ private:
 	EdgeWeights& weights_;
 	Params par_;
 	threshold_v thresholds_;
-	spin_v spins_;
-	switch_info_v switchInfo_;
+	state_v states_;
+	spike_v outputs_;
+	switch_info_v spikeInfo_;
 
-	void initSpins();
+	void initOutputs();
 	double computeInputs(const largenet::Node& n) const;
 	void initSwitchInfo();
 };

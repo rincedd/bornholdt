@@ -99,7 +99,7 @@ void EvolutionController::initEdgeWeights()
 			new EdgeWeights(graph_.numberOfEdges(), graph_.numberOfNodes()));
 	BOOST_FOREACH(const Edge& e, graph_.edges())
 	{
-		weights_->setWeight(e, rng.FromTo(-1, 1));
+		weights_->setWeight(e, rng.FromTo(0, 1));
 	}
 }
 
@@ -139,7 +139,7 @@ void EvolutionController::writeInfo(ostream& strm) const
 void EvolutionController::activateEdge(const Graph::EdgeIterator& edge)
 {
 	graph_.setEdgeState(edge->id(), ACTIVE);
-	weights_->setWeight(*edge, rng.FromTo(-1, 1));
+	weights_->setWeight(*edge, rng.FromTo(0, 1));
 }
 
 void EvolutionController::deactivateEdge(const Graph::EdgeIterator& edge)
@@ -182,8 +182,8 @@ int EvolutionController::exec()
 		stepper.makeSteps(par_.num_iterations / 2);
 		Graph::EdgeIterator edge = random_from(graph_.edges(), rng);
 		SingleCorrelationObserver correlationObserver(
-				model_->spin(edge->source()->id()),
-				model_->spin(edge->target()->id()));
+				model_->output(edge->source()->id()),
+				model_->output(edge->target()->id()));
 		stepper.addObserver(&correlationObserver);
 		stepper.makeSteps(par_.num_iterations / 2);
 		evolutionLogger.log(i);

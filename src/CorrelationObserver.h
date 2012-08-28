@@ -19,8 +19,8 @@ public:
 		BOOST_FOREACH(const largenet::Edge& edge, graph.edges(ACTIVE))
 		{
 			correlations_.push_back(
-					CorrelationAccumulator(model.spin(edge.source()->id()),
-							model.spin(edge.target()->id())));
+					CorrelationAccumulator(model.output(edge.source()->id()),
+							model.output(edge.target()->id())));
 		}
 	}
 	void notify()

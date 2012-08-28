@@ -86,8 +86,8 @@ void GraphStateReader::createFromStream(istream& strm, Graph& graph,
 		edge_id_t eid = graph.addEdge(e.source.id, e.target.id, true);
 		graph.setEdgeState(eid, e.state);
 		weights.setWeight(*graph.edge(eid), e.weight);
-		model.spin(e.source.id) = e.source.spin;
-		model.spin(e.target.id) = e.target.spin;
+		model.output(e.source.id) = e.source.spin;
+		model.output(e.target.id) = e.target.spin;
 		model.threshold(e.source.id) = e.source.threshold;
 		model.threshold(e.target.id) = e.target.threshold;
 	}

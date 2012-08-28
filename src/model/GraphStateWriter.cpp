@@ -10,8 +10,8 @@ void GraphStateWriter::write(const Graph& g, ostream& strm)
 	{
 		strm << e.source()->id() << "\t" << e.target()->id() << "\t"
 				<< weights_(e) << "\t" << g.edgeState(e.id()) << "\t"
-				<< model_.spin(e.source()->id()) << "\t"
-				<< model_.spin(e.target()->id()) << "\t"
+				<< model_.output(e.source()->id()) << "\t"
+				<< model_.output(e.target()->id()) << "\t"
 				<< model_.threshold(e.source()->id()) << "\t"
 				<< model_.threshold(e.target()->id()) << "\n";
 	}
