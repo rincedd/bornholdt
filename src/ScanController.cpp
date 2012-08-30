@@ -71,8 +71,6 @@ void ScanController::storeNetworkParameters()
 	par_.num_nodes = graph_.numberOfNodes();
 	par_.average_degree = static_cast<double>(graph_.numberOfEdges())
 			/ graph_.numberOfNodes();
-	par_.average_active_connectivity = static_cast<double>(graph_.numberOfEdges(
-			ACTIVE)) / graph_.numberOfNodes();
 }
 
 void ScanController::setup()

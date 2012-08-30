@@ -18,10 +18,9 @@ public:
 	{
 		return str(
 				boost::format(
-						"%1%-n%2%-k%3%-K%4%--beta%5%-eps%6%-mu%7%--t%8%--I%9%-alpha%10%")
-						% network % num_nodes % average_degree
-						% average_active_connectivity % beta % epsilon % mu
-						% num_iterations % num_topological_updates % alpha);
+						"%1%-n%2%-k%3%--beta%4%-eps%5%-mu%6%--t%7%--I%8%-alpha%9%")
+						% network % num_nodes % average_degree % beta % epsilon
+						% mu % num_iterations % num_topological_updates % alpha);
 	}
 public:
 	double beta; ///< inverse temperature
@@ -33,7 +32,8 @@ public:
 	std::string network;	///< network type
 	size_t num_nodes;
 	double average_degree;
-	double average_active_connectivity;
+
+	double weight_increment, weight_decrement;
 
 	size_t num_iterations;
 	size_t num_topological_updates;
@@ -52,11 +52,12 @@ inline std::ostream& operator<<(std::ostream& out, const BornholdtParameters& p)
 			<< ", epsilon = " << p.epsilon;
 	out << "\n# Correlation cutoff alpha = " << p.alpha;
 	out << "\n# Network type: " << p.network;
-	out << "\n# N = " << p.num_nodes << ", <k> = " << p.average_degree
-			<< ", <K> = " << p.average_active_connectivity;
+	out << "\n# N = " << p.num_nodes << ", <k> = " << p.average_degree;
 	out << "\n# Number of iterations: " << p.num_iterations
 			<< "\n# Number of topological updates: "
 			<< p.num_topological_updates;
+	out << "\n# Weight increment: " << p.weight_increment
+			<< ", weight decrement: " << p.weight_decrement;
 	out << "\n# Snapshot interval: " << p.snapshot_interval;
 	out << "\n# Lower scan bound: " << p.scan_low << ", upper scan bound: "
 			<< p.scan_high;

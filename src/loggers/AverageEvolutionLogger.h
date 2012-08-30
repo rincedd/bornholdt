@@ -11,7 +11,6 @@
 #include "Logger.h"
 #include <largenet2.h>
 #include "../model/EdgeWeights.h"
-#include "../model/edge_states.h"
 
 class AverageEvolutionLogger: public StreamLogger
 {
@@ -29,15 +28,13 @@ public:
 		{
 			sigma += it.second;
 		}
-		sigma /= graph_.numberOfEdges(ACTIVE);
-		stream() << t << "\t"
-				<< static_cast<double>(graph_.numberOfEdges(ACTIVE))
-						/ graph_.numberOfNodes() << "\t" << sigma << "\n";
+		sigma /= graph_.numberOfEdges();
+		stream() << t << "\t" << sigma << "\n";
 	}
 
 	void writeHeader(double t)
 	{
-		stream() << "# t\t<k>\t<weight>\n";
+		stream() << "# t\t<weight>\n";
 	}
 
 	void reset()

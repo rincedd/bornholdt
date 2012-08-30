@@ -6,7 +6,6 @@
 #include <largenet2/base/converters.h>
 #include <stdexcept>
 #include "EvolutionController.h"
-#include "model/edge_states.h"
 #include "Filename.h"
 #include "StepRepeater.h"
 #include "SingleCorrelationObserver.h"
@@ -35,35 +34,8 @@ void EvolutionController::initRandomNumberGenerator()
 	storeRandomNumberGeneratorSeed();
 }
 
-void EvolutionController::initEdgeStates()
-{
-	edge_size_t numberOfActiveEdges = static_cast<edge_size_t>(round(
-			par_.average_active_connectivity * graph_.numberOfNodes()));
-	if (numberOfActiveEdges > graph_.numberOfEdges())
-		throw std::runtime_error(
-				"Average connectivity cannot exceed average degree");
-	edge_size_t initialInactiveEdges = graph_.numberOfEdges()
-			- numberOfActiveEdges;
-	while (graph_.numberOfEdges(INACTIVE) < initialInactiveEdges)
-	{
-		Graph::EdgeStateIterator e = myrng::util::random_from(
-				graph_.edges(ACTIVE), rng);
-		graph_.setEdgeState(e.id(), INACTIVE);
-	}
-}
-
-void EvolutionController::resetEdgeStates()
-{
-	BOOST_FOREACH(Edge& e, graph_.edges())
-	{
-		graph_.setEdgeState(e.id(), ACTIVE);
-	}
-}
-
 void EvolutionController::initEdges()
 {
-	resetEdgeStates();
-	initEdgeStates();
 	initEdgeWeights();
 }
 
@@ -138,14 +110,16 @@ void EvolutionController::writeInfo(ostream& strm) const
 
 void EvolutionController::activateEdge(const Graph::EdgeIterator& edge)
 {
-	graph_.setEdgeState(edge->id(), ACTIVE);
-	weights_->setWeight(*edge, rng.FromTo(0, 1));
+	double w = weights_->weight(*edge);
+	if (w < 1 - par_.weight_increment)
+		weights_->setWeight(*edge, w + par_.weight_increment);
 }
 
 void EvolutionController::deactivateEdge(const Graph::EdgeIterator& edge)
 {
-	graph_.setEdgeState(edge->id(), INACTIVE);
-	weights_->setWeight(*edge, 0.0);
+	double w = weights_->weight(*edge);
+	if (w > par_.weight_decrement)
+		weights_->setWeight(*edge, w - par_.weight_decrement);
 }
 
 void EvolutionController::updateTopology(Graph::EdgeIterator edge,

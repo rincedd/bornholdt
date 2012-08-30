@@ -4,7 +4,6 @@
 #include "Logger.h"
 #include <largenet2.h>
 #include "../model/EdgeWeights.h"
-#include "../model/edge_states.h"
 
 class ScanLogger: public StreamLogger
 {
@@ -42,9 +41,9 @@ public:
 		{
 			sigma += it.second;
 		}
-		sigma /= graph_.numberOfEdges(ACTIVE);
+		sigma /= graph_.numberOfEdges();
 		stream() << t << "\t"
-				<< static_cast<double>(graph_.numberOfEdges(ACTIVE))
+				<< static_cast<double>(graph_.numberOfEdges())
 						/ graph_.numberOfNodes() << "\t" << sigma << "\t"
 				<< meanCorrelation_ << "\t" << aboveAlphaFraction_ << "\t"
 				<< belowAlphaFraction_ << "\t" << switchedFraction_ << "\n";

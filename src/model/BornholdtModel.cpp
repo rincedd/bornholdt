@@ -1,5 +1,4 @@
 #include "BornholdtModel.h"
-#include "edge_states.h"
 #include <boost/foreach.hpp>
 #include <myrng/myrngWELL.h>
 
@@ -50,8 +49,7 @@ double BornholdtModel::computeInputs(const Node& n) const
 	double inputs = 0;
 	BOOST_FOREACH(Edge* e, n.outEdges())
 	{
-		if (net_.edgeState(e->id()) == ACTIVE) // weight should be zero anyway if inactive?
-			inputs += weights_.weight(e->id()) * outputs_[e->target()->id()];
+		inputs += weights_.weight(e->id()) * outputs_[e->target()->id()];
 	}
 	return inputs;
 }

@@ -7,7 +7,6 @@
 #include "Observer.h"
 #include "model/BornholdtModel.h"
 #include "CorrelationAccumulator.h"
-#include "model/edge_states.h"
 
 class CorrelationObserver: public Observer
 {
@@ -15,8 +14,8 @@ public:
 	CorrelationObserver(const largenet::Graph& graph,
 			const BornholdtModel& model)
 	{
-		correlations_.reserve(graph.numberOfEdges(ACTIVE));
-		BOOST_FOREACH(const largenet::Edge& edge, graph.edges(ACTIVE))
+		correlations_.reserve(graph.numberOfEdges());
+		BOOST_FOREACH(const largenet::Edge& edge, graph.edges())
 		{
 			correlations_.push_back(
 					CorrelationAccumulator(model.output(edge.source()->id()),

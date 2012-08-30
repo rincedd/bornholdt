@@ -28,8 +28,6 @@ private:
 	void initEdges();
 	void createSquareLattice();
 	void createPeriodicSquareLattice();
-	void initEdgeStates();
-	void resetEdgeStates();
 	void createNetwork();
 	void storeNetworkParameters();
 

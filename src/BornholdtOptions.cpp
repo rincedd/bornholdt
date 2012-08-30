@@ -26,13 +26,14 @@ void BornholdtOptions::setup()
 	netOpts.add_options()
 			("network", po::value<string>(&par_.network)->default_value("random"), "Network type: random, square, periodic-square.")
 			("nodes,n", po::value<size_t>(&par_.num_nodes)->default_value(100), "Number of nodes.")
-			("avg-degree,k", po::value<double>(&par_.average_degree)->default_value(8), "Intended average degree of network.")
-			("avg-connectivity", po::value<double>(&par_.average_active_connectivity)->default_value(4), "Average number of active links per node.");
+			("avg-degree,k", po::value<double>(&par_.average_degree)->default_value(8), "Intended average degree of network.");
 
 	simOpts.add_options()
 			("iterations", po::value<size_t>(&par_.num_iterations)->default_value(200), "Number of iterations between topological updates.")
 			("updates", po::value<size_t>(&par_.num_topological_updates)->default_value(10), "Number of topological update steps.")
 			("alpha", po::value<double>(&par_.alpha)->default_value(0.8), "Correlation cutoff.")
+			("weight-increment", po::value<double>(&par_.weight_increment)->default_value(0.05), "Weight increment in a topological update.")
+			("weight-decrement", po::value<double>(&par_.weight_decrement)->default_value(0.01), "Weight decrement in a topological update.")
 			("snapshot-interval", po::value<size_t>(&par_.snapshot_interval)->default_value(10), "Log network snapshots every ARG iterations.")
 			("random-seed", po::value<unsigned long>(&par_.seed)->default_value(0), "Random number generator seed.");
 
